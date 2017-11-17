@@ -1,16 +1,23 @@
 " Pluggins
 call plug#begin()
+" go
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'SirVer/ultisnips'
 Plug 'AndrewRadev/splitjoin.vim'
+" Themes
 Plug 'fatih/molokai'
+Plug 'nanotech/jellybeans.vim', { 'tag': 'v1.6' }
 if !has("nvim")
 	Plug 'Shougo/neocomplete.vim'
 endif
-Plug 'airblade/vim-gitgutter'
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
+
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
 Plug 'jiangmiao/auto-pairs'
+" git plugins
 Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+
 Plug 'easymotion/vim-easymotion'
 Plug 'haya14busa/incsearch.vim'
 Plug 'scrooloose/nerdtree'
@@ -33,6 +40,13 @@ if has("nvim")
 	Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 	Plug 'zchee/deoplete-go', { 'do': 'make'}
 endif
+" Mutlifile replace/ silver searcher
+Plug 'wincent/ferret'
+" Rest Client
+Plug 'quach/vim-http-client'
+" Better terminal support
+Plug 'wincent/terminus'
+Plug 'python-mode/python-mode'
 call plug#end()
 
 " Go settings
@@ -49,8 +63,8 @@ autocmd FileType go nmap <leader>t <Plug>(go-test)
 
 " Molokai colorscheme
 let g:rehash256 = 1
-let g:molokai_original = 1
-colorscheme molokai
+"let g:molokai_original = 1
+colorscheme jellybeans
 
 " Go info settings
 autocmd FileType go nmap <Leader>i <Plug>(go-info)
@@ -73,11 +87,16 @@ endif
 " Vim common settings
 set guioptions-=m
 set guioptions-=T
-set guifont=FiraCode\ Retina\ 10
+set guifont=FiraCode\ Regular\ 10
 set number
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
 autocmd BufNewFile,BufRead *.yml setlocal noexpandtab tabstop=2 shiftwidth=2
 autocmd BufNewFile,BufRead *.yaml setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
+autocmd BufNewFile,BufRead *.json setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
+
+autocmd BufNewFile,BufRead *.hbs setlocal tabstop=2 sts=2 shiftwidth=2 expandtab syntax=html
+autocmd BufNewFile,BufRead *.exm setlocal tabstop=2 sts=2 shiftwidth=2 expandtab syntax=json
+autocmd BufNewFile,BufRead *.env setlocal tabstop=2 sts=2 shiftwidth=2 expandtab syntax=yaml
 
 " Incsearch plugin setting
 map /  <Plug>(incsearch-forward)
@@ -87,6 +106,9 @@ map g/ <Plug>(incsearch-stay)
 " NerdTree
 map <C-n> :NERDTreeToggle<CR>
 map <Leader><Leader>r :NERDTreeFind<CR>
+
+" FZF
+map <C-p> :FZF<CR>
 
 " Vim Airline
 set laststatus=2
