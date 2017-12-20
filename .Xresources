@@ -1,4 +1,4 @@
-URxvt.font: xft:FiraCode:Regular:size=10
+URxvt.font: xft:FuraCode Nerd Font Mono:Retina:size=11:antialias=true
 URxvt.letterSpace: -1
 URxvt.lineSpace: 1 
 ! Molokai theme
@@ -21,6 +21,9 @@ URxvt*color13: #bb88dd
 URxvt*color14: #4eb4fa
 URxvt*color15: #d0d0d0
 URxvt.scrollBar: false
+! Transperancy 
+URxvt.transparent:   true
+URxvt.shading:       20
 ! Molokai theme
 ! See: https://gist.github.com/vreon/845878
 xterm*faceName: xft:FuraCodeNerdFont:Regular:size=10
@@ -42,11 +45,3 @@ xterm*color11: #ffba68
 xterm*color12: #5f5fee
 xterm*color13: #bb88dd
 xterm*color14: #4eb4fa
-! Font settings
-Xft.autohint: 0
-Xft.lcdfilter:  lcddefault
-Xft.hintstyle:  hintslight
-Xft.hinting: 1
-Xft.antialias: 1
-Xft.dpi: 96
-Xft.rgba: rgbterm*color15: #d0d0d0

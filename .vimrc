@@ -1,12 +1,13 @@
 " Pluggins
 call plug#begin()
 " go
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' } 
 Plug 'SirVer/ultisnips'
 Plug 'AndrewRadev/splitjoin.vim'
 " Themes
 Plug 'fatih/molokai'
 Plug 'nanotech/jellybeans.vim', { 'tag': 'v1.6' }
+Plug 'altercation/vim-colors-solarized'
 if !has("nvim")
 	Plug 'Shougo/neocomplete.vim'
 endif
@@ -47,7 +48,19 @@ Plug 'quach/vim-http-client'
 " Better terminal support
 Plug 'wincent/terminus'
 Plug 'python-mode/python-mode'
+" Indent line
+Plug 'yggdroot/indentline'
+" JSON
+Plug 'elzr/vim-json'
 call plug#end()
+
+let g:indentLine_setColors = 0
+let g:indentLine_setConceal = 0
+
+" Python settings
+let g:pymode_python = 'python2'
+let g:pymode_rope_completion = 1
+let g:pymode_rope_autoimport = 1
 
 " Go settings
 let g:go_fmt_command = "goimports"
@@ -60,14 +73,17 @@ let g:go_highlight_extra_types = 1
 autocmd FileType go nmap <leader>r <Plug>(go-run)
 autocmd FileType go nmap <leader>b <Plug>(go-build)
 autocmd FileType go nmap <leader>t <Plug>(go-test)
+autocmd FileType go nmap <Leader>i <Plug>(go-info)
 
 " Molokai colorscheme
 let g:rehash256 = 1
 "let g:molokai_original = 1
+"set background=dark
+"let g:solarized_termcolors=256
+"let g:solarized_visibility="low"
 colorscheme jellybeans
 
 " Go info settings
-autocmd FileType go nmap <Leader>i <Plug>(go-info)
 let g:go_auto_type_info = 0
 " set updatetime=100
 
@@ -89,13 +105,13 @@ set guioptions-=m
 set guioptions-=T
 set guifont=FiraCode\ Regular\ 10
 set number
+
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
 autocmd BufNewFile,BufRead *.yml setlocal noexpandtab tabstop=2 shiftwidth=2
 autocmd BufNewFile,BufRead *.yaml setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
 autocmd BufNewFile,BufRead *.json setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
 
-autocmd BufNewFile,BufRead *.hbs setlocal tabstop=2 sts=2 shiftwidth=2 expandtab syntax=html
-autocmd BufNewFile,BufRead *.exm setlocal tabstop=2 sts=2 shiftwidth=2 expandtab syntax=json
+autocmd BufNewFile,BufRead *.exm,*.hbs setlocal tabstop=2 sts=2 shiftwidth=2 expandtab syntax=json
 autocmd BufNewFile,BufRead *.env setlocal tabstop=2 sts=2 shiftwidth=2 expandtab syntax=yaml
 
 " Incsearch plugin setting
@@ -113,6 +129,7 @@ map <C-p> :FZF<CR>
 " Vim Airline
 set laststatus=2
 let g:airline_theme = 'bubblegum'
+let g:airline_powerline_fonts = 1
 let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
@@ -122,8 +139,25 @@ function! AirlineThemePatch(palette)
 	let g:airline_symbols.branch = ''
 	let g:airline_symbols.readonly = ''
 	let g:airline_symbols.linenr = ''
+	" unicode symbols
+	"let g:airline_left_sep = '»'
+	"let g:airline_left_sep = '▶'
+	"let g:airline_right_sep = '«'
+	"let g:airline_right_sep = '◀'
+	"let g:airline_symbols.crypt = '🔒'
+	"let g:airline_symbols.linenr = '␊'
+	"let g:airline_symbols.linenr = '␤'
+	"let g:airline_symbols.linenr = '¶'
+	"let g:airline_symbols.maxlinenr = '☰'
+	"let g:airline_symbols.maxlinenr = ''
+	"let g:airline_symbols.branch = '⎇'
+	"let g:airline_symbols.paste = 'ρ'
+	"let g:airline_symbols.paste = 'Þ'
+	"let g:airline_symbols.paste = '∥'
+	"let g:airline_symbols.spell = 'Ꞩ'
+	"let g:airline_symbols.notexists = '∄'
+	"let g:airline_symbols.whitespace = 'Ξ'
 endfunction
-
 " Smooth scroll 
 " let g:comfortable_motion_scroll_down_key = "j"
 " let g:comfortable_motion_scroll_up_key = "k"
@@ -132,6 +166,10 @@ endfunction
 let vim_markdown_preview_perl=1
 let vim_markdown_preview_use_xdg_open=1
 let vim_markdown_preview_browser='chromium'
+
+if has("nvim")
+	nmap <F9> :vsplit term://zsh<CR>
+endif
 
 " Tagbar bindings
 nmap <F8> :TagbarToggle<CR>
