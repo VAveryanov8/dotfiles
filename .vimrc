@@ -54,11 +54,7 @@ Plug 'yggdroot/indentline'
 Plug 'elzr/vim-json'
 call plug#end()
 
-let g:indentLine_setColors = 0
-let g:indentLine_setConceal = 0
-
 " Python settings
-let g:pymode_python = 'python2'
 let g:pymode_rope_completion = 1
 let g:pymode_rope_autoimport = 1
 
@@ -107,7 +103,7 @@ set guifont=FiraCode\ Regular\ 10
 set number
 
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
-autocmd BufNewFile,BufRead *.yml setlocal noexpandtab tabstop=2 shiftwidth=2
+autocmd BufNewFile,BufRead *.yml setlocal  tabstop=2 sts=2 shiftwidth=2 expandtab
 autocmd BufNewFile,BufRead *.yaml setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
 autocmd BufNewFile,BufRead *.json setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
 
