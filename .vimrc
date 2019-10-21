@@ -33,6 +33,7 @@ Plug 'dhruvasagar/vim-table-mode'
 Plug 'tpope/vim-repeat'
 Plug 'yuttie/comfortable-motion.vim'
 Plug 'jeetsukumaran/vim-indentwise'
+Plug 'MattesGroeger/vim-bookmarks'
 " }}}
 " Tags
 Plug 'majutsushi/tagbar'
@@ -41,69 +42,39 @@ if has("nvim")
 	Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 	Plug 'zchee/deoplete-go', { 'do': 'make'}
 endif
+
+Plug 'Shougo/echodoc.vim'
 " Mutlifile replace/ silver searcher
 Plug 'wincent/ferret'
-" HTTP Client
-Plug 'diepm/vim-rest-console'
 " Better terminal support
 Plug 'wincent/terminus'
 " Indent line
 Plug 'nathanaelkane/vim-indent-guides'
-Plug 'tpope/vim-obsession'
 Plug 'ludovicchabant/vim-gutentags'
-" Markdown
-Plug 'suan/vim-instant-markdown'
 " StartScreen customizer
 Plug 'mhinz/vim-startify'
 " lsp client
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
 call plug#end()
 
+" echodoc.vim setting --- {{{
+set cmdheight=2
+let g:echodoc#enable_at_startup = 1
+let g:echodoc#type = 'signature'
+" }}}
+
 " lsp servers registries --- {{{
-" python
-if executable('pyls')
-    " pip install python-language-server
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
-        \ })
-endif
-" c/c++
-if executable('clangd')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'clangd',
-        \ 'cmd': {server_info->['clangd']},
-        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-        \ })
-endif
-" ruby
-if executable('solargraph')
-    " gem install solargraph
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'solargraph',
-        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
-        \ 'initialization_options': {"diagnostics": "true"},
-        \ 'whitelist': ['ruby'],
-        \ })
-endif
-" ocaml/reason
-if executable('ocaml-language-server')
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'ocaml-language-server',
-        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'opam config exec -- ocaml-language-server --stdio']},
-        \ 'whitelist': ['reason', 'ocaml'],
-        \ })
-endif
-" rust
-if executable('rls')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'rls',
-        \ 'cmd': {server_info->['rustup', 'run', 'stable', 'rls']},
-        \ 'whitelist': ['rust'],
-        \ })
-endif
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+    \ 'python': ['pyls'],
+    \ 'ruby': ['solargraph', 'stdio'],
+    \ 'cpp': ['clangd'],
+    \ 'c': ['clangd']
+    \ }
 " }}}
 
 " Lsp settings --- {{{
@@ -162,6 +133,8 @@ let g:rehash256 = 1
 colorscheme gruvbox
 set background=dark 
 
+" FZF --- {{{ 
+
 function! HandleFASD(dir_name)
 	execute "cd " . a:dir_name
 	normal :FZF
@@ -173,8 +146,20 @@ function! BranchDiff(rev)
 	copen
 endfunction
 
+
+augroup fzf
+	au!
+	au FileType fzf set laststatus=0 noshowmode noruler
+	\| au BufLeave <buffer> set laststatus=2 showmode ruler
+augroup END
+
 command! FASD call fzf#run(fzf#wrap({'source': 'zsh -c "fasd -dl"', 'options': '--no-sort --tac --tiebreak=index', 'sink': function('HandleFASD')}))
-nnoremap <silent> <Leader>f :FASD<CR>
+command! MruFasd call fzf#run(fzf#wrap({'source': 'zsh -c "fasd -fl"', 'options': '--no-sort --tac --tiebreak=index', 'sink': 'e'}))
+
+nnoremap <silent> <Leader>fd :FASD<CR>
+nnoremap <silent> <Leader>ff :MruFasd<CR>
+map <C-p> :FZF<CR>
+" --- }}}
 
 " Neocomplete settings --- {{{
 if !has("nvim")
@@ -200,16 +185,18 @@ augroup filetype_vim
 augroup END
 " }}}
 
+" Local File settings ---- {{{
 augroup localsetting
 	autocmd!
 	autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
 	autocmd BufNewFile,BufRead *.yml setlocal  tabstop=2 sts=2 shiftwidth=2 expandtab
 	autocmd BufNewFile,BufRead *.yaml setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
-	autocmd BufNewFile,BufRead *.json,*.rb setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
+	autocmd BufNewFile,BufRead *.json,*.rb,*.nim setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
 
 	autocmd BufNewFile,BufRead *.exm,*.hbs setlocal tabstop=2 sts=2 shiftwidth=2 expandtab syntax=json
 	autocmd BufNewFile,BufRead *.env setlocal tabstop=2 sts=2 shiftwidth=2 expandtab syntax=yaml
 augroup END
+" --- }}}
 
 " Incsearch plugin setting --- {{{
 map /  <Plug>(incsearch-forward)
@@ -219,7 +206,6 @@ nmap <silent> ./ :nohlsearch<CR>
 " }}}
 
 
-map <C-p> :FZF<CR>
 
 " Vim Airline --- {{{
 let g:airline#extensions#obsession#enabled = 1
@@ -239,6 +225,11 @@ function! AirlineThemePatch(palette)
 endfunction
 " }}}
 
-
+let g:bookmark_annotation_sign = ''
 " json fix for quotes
 set conceallevel=0
+
+augroup vimsync
+	autocmd!
+	autocmd BufWritePost ~/work/vimsync/*.todo call system(expand('~/work/vimsync/vimsync --log 1 ' . bufname("%")))
+augroup END
