@@ -51,7 +51,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git web-search aws git-extras zsh-256color urltools vim sudo zsh-autosuggestions zsh-completions zsh-syntax-highlighting)
+plugins=(git web-search aws git-extras zsh-256color urltools vim sudo zsh-completions zsh-syntax-highlighting zsh-autosuggestions)
 
 if [[ -a ~/.work_zsh.sh ]]; then
 	source ~/.work_zsh.sh
@@ -91,7 +91,6 @@ source ~/.fzf.zsh
 alias vim=nvim
 
 export GOPATH=~/go
-# export TERM="rxvt-unicode-256color"
 export PATH=$PATH:~/go/bin/
 export PATH=$PATH:~/plugins/
 if [[ -a ~/Downloads/Telegram/Telegram ]]; then
@@ -99,6 +98,25 @@ if [[ -a ~/Downloads/Telegram/Telegram ]]; then
 fi
 export PATH=$PATH:/opt/mitm/
 export PATH=$PATH:~/Downloads/bin/
-export PATH=$PATH:~/Downloads/neovim-qt/build/bin
-
+export PATH=$PATH:~/.npm_global/bin
+export PATH=$PATH:/home/vasya/.local/bin
+export PATH=$PATH:~/.gem/ruby/2.5.0/bin
+export PATH="$HOME/.cargo/bin:$PATH"
 export EDITOR=nvim
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=12"
+
+eval "$(fasd --init auto)"
+
+[[ -s "/home/vasya/.gvm/scripts/gvm" ]] && source "/home/vasya/.gvm/scripts/gvm"
+# This speeds up pasting w/ autosuggest
+# https://github.com/zsh-users/zsh-autosuggestions/issues/238
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+}
+
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish

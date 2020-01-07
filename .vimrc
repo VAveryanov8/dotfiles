@@ -63,7 +63,7 @@ call plug#end()
 " echodoc.vim setting --- {{{
 set cmdheight=2
 let g:echodoc#enable_at_startup = 1
-let g:echodoc#type = 'signature'
+let g:echodoc#type = 'floating'
 " }}}
 
 " lsp servers registries --- {{{
@@ -73,7 +73,11 @@ let g:LanguageClient_serverCommands = {
     \ 'python': ['pyls'],
     \ 'ruby': ['solargraph', 'stdio'],
     \ 'cpp': ['clangd'],
-    \ 'c': ['clangd']
+    \ 'c': ['clangd'],
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ 'java': ['/usr/local/bin/jdtls', '-data', getcwd()],
+    \ 'typescript': ['javascript-typescript-stdio'],
+    \ 'groovy': ['/usr/local/bin/groovy_lsp']
     \ }
 " }}}
 
@@ -189,6 +193,7 @@ augroup END
 augroup localsetting
 	autocmd!
 	autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
+	autocmd BufNewFile,BufRead *.zig setlocal  tabstop=4 shiftwidth=4 expandtab
 	autocmd BufNewFile,BufRead *.yml setlocal  tabstop=2 sts=2 shiftwidth=2 expandtab
 	autocmd BufNewFile,BufRead *.yaml setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
 	autocmd BufNewFile,BufRead *.json,*.rb,*.nim setlocal tabstop=2 sts=2 shiftwidth=2 expandtab
@@ -233,3 +238,19 @@ augroup vimsync
 	autocmd!
 	autocmd BufWritePost ~/work/vimsync/*.todo call system(expand('~/work/vimsync/vimsync --log 1 ' . bufname("%")))
 augroup END
+
+function! Translate()
+	" backup register data
+	let reg ='"' 
+	let reg_save = getreg(reg)
+	let reg_type = getregtype(reg)
+	silent execute 'norm! gv"'.reg.'y'
+	let res = system("trans en:ru -brief ", shellescape(@"))
+	vsplit __Translate_Result__
+	normal! ggdG
+	call append(0, res)
+	" restore register
+	call setreg(reg, reg_save, reg_type)
+endfunction
+
+vnoremap <silent> T :<C-U>call Translate()<CR>
