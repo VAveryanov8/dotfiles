@@ -54,6 +54,7 @@ Plug 'ludovicchabant/vim-gutentags'
 " StartScreen customizer
 Plug 'mhinz/vim-startify'
 " lsp client
+" Terrform
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
@@ -163,6 +164,7 @@ command! MruFasd call fzf#run(fzf#wrap({'source': 'zsh -c "fasd -fl"', 'options'
 nnoremap <silent> <Leader>fd :FASD<CR>
 nnoremap <silent> <Leader>ff :MruFasd<CR>
 map <C-p> :FZF<CR>
+map <C-s> :Buffers<CR>
 " --- }}}
 
 " Neocomplete settings --- {{{
